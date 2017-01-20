@@ -77,8 +77,9 @@ public class ElevatorSCAN implements Elevator {
 
 	@Override
 	public int getNextFloor() {
-		return getDirection() == Direction.IDLE ? -1
-				: getDirection() == Direction.UP ? upStops.higher(getCurrFloor()) : downStops.lower(getCurrFloor());
+		if (getDirection() == Direction.IDLE)
+			return -1;
+		return getDirection() == Direction.UP ? upStops.higher(getCurrFloor()) : downStops.lower(getCurrFloor());
 	}
 
 	public int getDestFloor() {
