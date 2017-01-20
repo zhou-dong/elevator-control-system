@@ -6,7 +6,7 @@ Mesosphere Distributed Applications Engineer Challenge
 
 At first, I don't want to let the "Central Control System" to control every step of the elevators. Each elevator should have it's own way to traversal among the floors.
 
-After control system received a pickup request, control system will ask all elevators the distance away from pickup floor. Every elevator will compute a distance away from pickup floor by itself, then response the result to control system. Finally control system will choose the nearest elevator to pickup passenger.
+After control system received a pickup request, control system will ask all elevators the distance away from pickup floor. Every elevator will compute a distance by itself, then response the result to control system. Finally control system will choose the nearest elevator to pickup passenger.
 
 ## Data Structures, Algorithms and Design Patterns
 
@@ -66,3 +66,13 @@ After control system received a pickup request, control system will ask all elev
 #### Solution 2:
 
 - Implement 'Strategy Design Pattern' to change algorithm friendly.
+
+### Build Instructions
+
+I leave all the eclipse configuration in repository, so just download the repository and import into eclipse as a java project.
+
+I use JUnit to test the cases include:
+
+- distance of elevator to pickup floor (different scenarios).
+- controller assign request to elevator.
+- elevator notify every step to controller.
