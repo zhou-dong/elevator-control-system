@@ -7,16 +7,14 @@ I want to let elevator
 
 After a pickup request sent to control system, the control system will ask every elevator who is the nearest one to the pickup floor.
 
-Implement SCAN algorithm:
+## Implement SCAN algorithm:
 
-Data structure: Two TreeSet stand for `up-stop-floor` and `down-stop-floor`.
-
-TreeSet: Objects are stored in a sorted and ascending order. 
+### Data structure: Two TreeSet(Objects are stored in a sorted and ascending order)
 
 - up-stop-floors(TreeSet): all the floors elevator will stopped during ascent.
 - down-stop-floors(TreeSet): all the floors elevator will stopped during descent.
 
-Compute the distance from elevator to pickup floor:
+### Compute the distance from elevator to pickup floor:
 
 1. Elevator is IDLE : 
 	- Math.abs(currentFloor - pickupFloor) ;
@@ -30,6 +28,12 @@ Compute the distance from elevator to pickup floor:
 	- Math.abs(destFloor - firstFloor/lastFloor) + 
 	- Math.abs(firstFloot/lastFloor - pickupFloor);
  
+### Handle the pickup request: pickup(int pickupFloor, int destFloor)
+
+- pickupFloor - destFloor > 0 ? up : down
+1. up: add both pickupFloor and destFloor to up-stop-floors.
+2. down: add both pickupFloor and destFloor to down-stop-floors.
+
 
 
 Design Architecture
