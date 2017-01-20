@@ -30,7 +30,7 @@ public class ElevatorSCAN implements Elevator {
 			return differentDirectionDistance(pickupFloor);
 
 		// case 2: all in same direction
-		if (getDirection() == Direction.getDirection(this.getCurrFloor(), pickupFloor))
+		if (getDirection() == Direction.getDirection(getCurrFloor(), pickupFloor))
 			return Math.abs(getCurrFloor() - pickupFloor);
 
 		// case 3: currDirection and request is same but passed pickup floor
@@ -71,6 +71,30 @@ public class ElevatorSCAN implements Elevator {
 	}
 
 	@Override
+	public int getNextFloor() {
+		if (getDirection() == Direction.IDLE)
+			return -1;
+		if (getDirection() == Direction.UP)
+			return upStops.higher(getCurrFloor());
+		else
+			return downStops.lower(getCurrFloor());
+	}
+
+	public int getDestFloor() {
+		if (getDirection() == Direction.IDLE)
+			return -1;
+		return getDirection() == Direction.UP ? upStops.last() : downStops.first();
+	}
+
+	public Direction getDirection() {
+		return this.currDirection;
+	}
+
+	public void setCurrDirection(Direction direction) {
+		this.currDirection = direction;
+	}
+
+	@Override
 	public int getId() {
 		return this.id;
 	}
@@ -78,26 +102,6 @@ public class ElevatorSCAN implements Elevator {
 	@Override
 	public int getCurrFloor() {
 		return this.currFloor;
-	}
-
-	@Override
-	public int getNextFloor() {
-		if (getDirection() == Direction.IDLE)
-			return -1;
-		return getDirection() == Direction.UP ? upStops.higher(getCurrFloor()) : downStops.lower(getCurrFloor());
-	}
-
-	public int getDestFloor() {
-		return getDirection() == Direction.IDLE ? -1
-				: getDirection() == Direction.UP ? upStops.last() : downStops.first();
-	}
-
-	public Direction getDirection() {
-		return this.currDirection;
-	}
-
-	public void setCurrDirection(Direction currDirection) {
-		this.currDirection = currDirection;
 	}
 
 }
