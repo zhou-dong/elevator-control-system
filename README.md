@@ -1,20 +1,32 @@
-# Elevator Control System (Mesosphere Distributed Applications Engineer Challenge)
+# Elevator Control System 
 
+Mesosphere Distributed Applications Engineer Challenge
 
-At first, I don't want to let the "Control center" to control every step of elevator.
+## Whole Structure
 
-I want to let elevator 
+At first, I don't want to let the "Central Control System" to control every step of the elevators. Each elevator should have it's own way to traversal among the floors.
 
-After a pickup request sent to control system, the control system will ask every elevator who is the nearest one to the pickup floor.
+After control system received a pickup request, control system will ask all elevators the distance away from pickup floor. Every elevator will compute a distance away from pickup floor by itself, then response the result to control system. Finally control system will choose the nearest elevator to pickup passenger.
 
-## Implement SCAN algorithm:
+## Data Structures, Algorithms and Design Patterns
 
-### Data structure: Two TreeSet(Objects are stored in a sorted and ascending order)
+- Data Structure: TreeSet
+- Algorithms: SCAN
+- Design patterns:
+	- Observer Design Pattern
+		- Not typical Observer Pattern, Just part of it.
+		- Elevator will send step() notification after every step. 
+	- Strategy Design Pattern
+		- Future work for easier change SCAN algorithm to others.
+	
+## Implement SCAN algorithm
+
+#### Data structure: Two TreeSet(Objects are stored in a sorted and ascending order)
 
 - up-stop-floors(TreeSet): All the floors which elevator will stopped during ascent.
 - down-stop-floors(TreeSet): All the floors which elevator will stopped during descent.
 
-### Compute the distance from elevator to pickup floor:
+#### Compute the distance from elevator to pickup floor:
 
 1. Elevator is IDLE : 
 	- Math.abs(currentFloor - pickupFloor) ;
@@ -28,7 +40,7 @@ After a pickup request sent to control system, the control system will ask every
 	- Math.abs(destFloor - firstFloor/lastFloor) + 
 	- Math.abs(firstFloot/lastFloor - pickupFloor);
  
-### Handle the pickup request: pickup(int pickupFloor, int destFloor)
+#### Handle the pickup request: pickup(int pickupFloor, int destFloor)
 
 - pickupFloor == destFloor: return
 - pickupFloor - destFloor < 0 ? up : down
@@ -36,26 +48,21 @@ After a pickup request sent to control system, the control system will ask every
 1. up: add both pickupFloor and destFloor to up-stop-floors.
 2. down: add both pickupFloor and destFloor to down-stop-floors.
 
-Design pattern:
-
-- Wanna to use: 
-- Observer
-
 ## Disadvantages And Future Work:
 
-#### Disadvantages:
+#### Disadvantages 1:
 
 1. Some elevators may be always more near to passengers then others, which could make some elevators overload meanwhile the others are IDLE.
 2. Never consider the capacity of the elevator.
 
-#### Solution:
+#### Solution 1:
 
 - Use a `score` indicate how much match of a elevator to passenger.
 
-#### Disadvantage:
+#### Disadvantage 2:
 
 - In this project, all the elevators use the same SCAN algorithm to traverse among the floors. May be different elevators should choose different algorithm.
 
-#### Solution:
+#### Solution 2:
 
 - Implement 'Strategy Design Pattern' to change algorithm friendly.
