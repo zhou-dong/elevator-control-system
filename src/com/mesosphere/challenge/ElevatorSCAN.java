@@ -7,6 +7,7 @@ public class ElevatorSCAN implements Elevator {
 	private int id;
 	private int currFloor;
 	private Direction currDirection;
+
 	TreeSet<Integer> upStops;
 	TreeSet<Integer> downStops;
 
@@ -87,6 +88,10 @@ public class ElevatorSCAN implements Elevator {
 
 	public Direction getDirection() {
 		return this.currDirection;
+	}
+
+	public void setCurrDirection(Direction currDirection) {
+		this.currDirection = currDirection;
 	}
 
 }
