@@ -28,7 +28,7 @@ public class ElevatorSCAN implements Elevator {
 		// case 1: pickup direction and current direction is different
 		Direction requestDirection = Direction.getDirection(pickupFloor, destFloor);
 		if (getDirection() != requestDirection)
-			return Math.abs(getCurrFloor() - getDestFloor()) + Math.abs(getDestFloor() - pickupFloor);
+			return differentDirectionDistance(pickupFloor);
 
 		// case 2: all in same direction
 		Direction currToPickupDirection = Direction.getDirection(this.getCurrFloor(), pickupFloor);
@@ -36,6 +36,14 @@ public class ElevatorSCAN implements Elevator {
 			return Math.abs(getCurrFloor() - pickupFloor);
 
 		// case 3: currDirection and request is same but passed pickup floor
+		return sameDirectionButPassedDistance(pickupFloor);
+	}
+
+	private int differentDirectionDistance(int pickupFloor) {
+		return Math.abs(getCurrFloor() - getDestFloor()) + Math.abs(getDestFloor() - pickupFloor);
+	}
+
+	private int sameDirectionButPassedDistance(int pickupFloor) {
 		int distance = Math.abs(getCurrFloor() - getDestFloor());
 		distance += Math.abs(upStops.last() - downStops.first());
 		if (getDirection() == Direction.UP) {

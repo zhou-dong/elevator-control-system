@@ -43,4 +43,23 @@ public class TestElevatorSCAN {
 		Assert.assertEquals(33, actual);
 	}
 
+	@Test
+	public void testNextFloor() {
+		scan.setCurrDirection(Direction.UP);
+		scan.addPickupRequest(8, 10);
+		scan.addPickupRequest(9, -9);
+		Assert.assertEquals(8, scan.getNextFloor());
+		scan.setCurrDirection(Direction.DOWN);
+		Assert.assertEquals(-9, scan.getNextFloor());
+	}
+
+	@Test
+	public void testDestFloor() {
+		scan.setCurrDirection(Direction.UP);
+		scan.addPickupRequest(8, 10);
+		scan.addPickupRequest(9, -9);
+		Assert.assertEquals(10, scan.getDestFloor());
+		scan.setCurrDirection(Direction.DOWN);
+		Assert.assertEquals(-9, scan.getNextFloor());
+	}
 }
