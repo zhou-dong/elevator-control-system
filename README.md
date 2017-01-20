@@ -9,10 +9,14 @@ After a pickup request sent to control system, the control system will ask every
 
 How to compute the distance from elevator to pickup floor:
 
-1. Elevator is IDLE : Math.abs(currentFloor - pickupFloor) ;
-2. Elevator and pickup-request have different direction: Math.abs(currentFloor - destFloor) + Math.abs(destFloor - pickupFloor) ;
-3. Elevator and pickup-request have same direction and elevator not passed: Math.abs(currentFloor - pickupFloor);
-4. Elevator and pickup-request have same direction but elevator passed: Math.abs(currentFloor - destFloor) + Math.abs(destFloor - firstFloor/lastFloor) + Math.abs(firstFloot/lastFloor - pickupFloor);
+1. Elevator is IDLE : 
+	- Math.abs(currentFloor - pickupFloor) ;
+2. Elevator and pickup-request have different direction:
+	- Math.abs(currentFloor - destFloor) + Math.abs(destFloor - pickupFloor) ;
+3. Elevator and pickup-request have same direction and elevator not passed:
+	- Math.abs(currentFloor - pickupFloor);
+4. Elevator and pickup-request have same direction but elevator passed:
+	- Math.abs(currentFloor - destFloor) + Math.abs(destFloor - firstFloor/lastFloor) + Math.abs(firstFloot/lastFloor - pickupFloor);
  
 
 
