@@ -43,8 +43,6 @@ Design pattern:
 
 ## Disadvantages And Future Work:
 
-### First
-
 #### Disadvantages:
 
 1. Some elevators may be always more near to passengers then others, which could make some elevators overload meanwhile the others are IDLE.
@@ -52,13 +50,11 @@ Design pattern:
 
 #### Solution:
 
-- Use a 'score' indicate how much match of a elevator to passenger.
-
-### Second
+- Use a `score` indicate how much match of a elevator to passenger.
 
 #### Disadvantage:
 
-- In this project, all the elevators use the same SCAN algorithm to traverse among the floors. May be different elevators could choose different algorithm.
+- In this project, all the elevators use the same SCAN algorithm to traverse among the floors. May be different elevators should choose different algorithm.
 
 #### Solution:
 
