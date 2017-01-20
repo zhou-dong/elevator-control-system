@@ -2,11 +2,14 @@ package com.mesosphere.challenge;
 
 import java.util.TreeSet;
 
-public class ElevatorSCAN implements Elevator {
+public class ElevatorSCAN implements Elevator, Runnable {
 
 	private int id;
 	private int currFloor;
 	private Direction currDirection;
+
+	private Controller controller;
+	private Thread thread;
 
 	TreeSet<Integer> upStops;
 	TreeSet<Integer> downStops;
@@ -102,6 +105,107 @@ public class ElevatorSCAN implements Elevator {
 	@Override
 	public int getCurrFloor() {
 		return this.currFloor;
+	}
+
+	@Override
+	public void setCurrFloor(int floor) {
+		this.currFloor = floor;
+	}
+
+	@Override
+	public void setDestFloor(int floor) {
+		if (this.getDirection() == Direction.UP)
+			upStops.add(floor);
+		else if (this.getDirection() == Direction.DOWN)
+			downStops.add(floor);
+		else if (Direction.getDirection(currFloor, floor) == Direction.UP)
+			upStops.add(floor);
+		else
+			downStops.add(floor);
+	}
+
+	@Override
+	public State getState() {
+		State state = new State();
+		state.currentFloor = getCurrFloor();
+		state.destFloor = getDestFloor();
+		state.elevatorId = getId();
+		return state;
+	}
+
+	@Override
+	public boolean isEmpty() {
+		return upStops.isEmpty() && downStops.isEmpty();
+	}
+
+	@Override
+	public void run() {
+		while (!this.isEmpty()) {
+			if (getDirection() == Direction.IDLE)
+				setCurrDirection(Direction.UP);
+			goUp();
+			setCurrDirection(Direction.DOWN);
+			goDown();
+			setCurrDirection(Direction.UP);
+		}
+		setCurrDirection(Direction.IDLE);
+	}
+
+	private void goUp() {
+		if (upStops.isEmpty() || getDirection() != Direction.UP)
+			return;
+		while (currFloor <= upStops.last()) {
+			step();
+			upStops.remove(currFloor);
+			Integer next = upStops.higher(currFloor);
+			currFloor = next != null ? next : currFloor;
+		}
+	}
+
+	private void goDown() {
+		if (downStops.isEmpty() || getDirection() != Direction.DOWN)
+			return;
+		while (currFloor >= downStops.first()) {
+			step();
+			downStops.remove(currFloor);
+			Integer next = upStops.lower(currFloor);
+			currFloor = next != null ? next : currFloor;
+		}
+	}
+
+	@Override
+	public void step() {
+		controller.step(getState());
+	}
+
+	@Override
+	public void register(Controller controller) {
+		controller.register(this);
+		this.controller = controller;
+	}
+
+	@Override
+	public void start() {
+		if (this.isEmpty())
+			return;
+		if (thread == null)
+			thread = new Thread(this);
+		if (thread.isAlive())
+			return;
+		thread.start();
+	}
+
+	@Override
+	public void stop() {
+		if (thread == null)
+			return;
+		if (!thread.isAlive())
+			return;
+		try {
+			thread.join();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 	}
 
 }
