@@ -7,7 +7,16 @@ I want to let elevator
 
 After a pickup request sent to control system, the control system will ask every elevator who is the nearest one to the pickup floor.
 
-How to compute the distance from elevator to pickup floor:
+Implement SCAN algorithm:
+
+Data structure: Two TreeSet stand for `up-stop-floor` and `down-stop-floor`.
+
+TreeSet: Objects are stored in a sorted and ascending order. 
+
+- up-stop-floors(TreeSet): all the floors elevator will stopped during ascent.
+- down-stop-floors(TreeSet): all the floors elevator will stopped during descent.
+
+Compute the distance from elevator to pickup floor:
 
 1. Elevator is IDLE : 
 	- Math.abs(currentFloor - pickupFloor) ;
