@@ -11,8 +11,8 @@ After a pickup request sent to control system, the control system will ask every
 
 ### Data structure: Two TreeSet(Objects are stored in a sorted and ascending order)
 
-- up-stop-floors(TreeSet): all the floors elevator will stopped during ascent.
-- down-stop-floors(TreeSet): all the floors elevator will stopped during descent.
+- up-stop-floors(TreeSet): All the floors which elevator will stopped during ascent.
+- down-stop-floors(TreeSet): All the floors which elevator will stopped during descent.
 
 ### Compute the distance from elevator to pickup floor:
 
@@ -30,35 +30,36 @@ After a pickup request sent to control system, the control system will ask every
  
 ### Handle the pickup request: pickup(int pickupFloor, int destFloor)
 
-- pickupFloor - destFloor > 0 ? up : down
+- pickupFloor == destFloor: return
+- pickupFloor - destFloor < 0 ? up : down
+
 1. up: add both pickupFloor and destFloor to up-stop-floors.
 2. down: add both pickupFloor and destFloor to down-stop-floors.
-
-
-
-Design Architecture
-
-
-Distance Algorithm:
-
-
-Implement of SCAN algorithm:
-
-Use to TreeSet to implement scan.
-
 
 Design pattern:
 
 - Wanna to use: 
 - Observer
 
+## Disadvantages And Future Work:
 
-Future Work:
+### First
 
-In this solution, Elevator-Control-System will choose the 'nearest' Elevator to handle the pickup request.
+#### Disadvantages:
 
-In this scenario, some elevator will working overload and the others may be idle.
+1. Some elevators may be always more near to passengers then others, which could make some elevators overload meanwhile the others are IDLE.
+2. Never consider the capacity of the elevator.
 
-Should have a better solution, which will consider 'comprehensive environments'. 
+#### Solution:
 
-Never consider of numbers of Passsiger in elevator and number of quest pansigner.
+- Use a 'score' indicate how much match of a elevator to passenger.
+
+### Second
+
+#### Disadvantage:
+
+- In this project, all the elevators use the same SCAN algorithm to traverse among the floors. May be different elevators could choose different algorithm.
+
+#### Solution:
+
+- Implement 'Strategy Design Pattern' to change algorithm friendly.
