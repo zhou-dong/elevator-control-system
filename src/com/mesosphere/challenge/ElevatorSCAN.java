@@ -7,7 +7,7 @@ public class ElevatorSCAN implements Elevator, Runnable {
 	private int id;
 	private int currFloor;
 	private Direction currDirection;
-
+	private boolean isAlive;
 	private Controller controller;
 	private Thread thread;
 
@@ -16,6 +16,7 @@ public class ElevatorSCAN implements Elevator, Runnable {
 
 	public ElevatorSCAN(int id) {
 		this.id = id;
+		this.isAlive = true;
 		this.upStops = new TreeSet<>();
 		this.downStops = new TreeSet<>();
 	}
@@ -45,12 +46,14 @@ public class ElevatorSCAN implements Elevator, Runnable {
 	}
 
 	private int sameDirectionButPassedDistance(int pickupFloor) {
+		int first = downStops.isEmpty() ? getCurrFloor() : downStops.first();
+		int last = upStops.isEmpty() ? getCurrFloor() : upStops.last();
 		int distance = Math.abs(getCurrFloor() - getDestFloor());
-		distance += Math.abs(upStops.last() - downStops.first());
+		distance += Math.abs(last - first);
 		if (getDirection() == Direction.UP) {
-			return distance + Math.abs(pickupFloor - downStops.first());
+			return distance + Math.abs(pickupFloor - first);
 		} else {
-			return distance + Math.abs(upStops.last() - pickupFloor);
+			return distance + Math.abs(last - pickupFloor);
 		}
 	}
 
@@ -65,6 +68,7 @@ public class ElevatorSCAN implements Elevator, Runnable {
 		} else {
 			addStopFloors(downStops, pickupFloor, destFloor);
 		}
+		this.start();
 	}
 
 	private void addStopFloors(TreeSet<Integer> stops, int... floors) {
@@ -77,23 +81,31 @@ public class ElevatorSCAN implements Elevator, Runnable {
 	public int getNextFloor() {
 		if (getDirection() == Direction.IDLE)
 			return -1;
-		if (getDirection() == Direction.UP)
+		if (getDirection() == Direction.UP) {
+			if (upStops.isEmpty() || upStops.last() == getCurrFloor())
+				return getCurrFloor();
 			return upStops.higher(getCurrFloor());
-		else
+		} else {
+			if (downStops.isEmpty() || downStops.first() == getCurrFloor())
+				return getCurrFloor();
 			return downStops.lower(getCurrFloor());
+		}
 	}
 
 	public int getDestFloor() {
 		if (getDirection() == Direction.IDLE)
 			return -1;
-		return getDirection() == Direction.UP ? upStops.last() : downStops.first();
+		if (getDirection() == Direction.UP) {
+			return upStops.isEmpty() ? getCurrFloor() : upStops.last();
+		} else
+			return downStops.isEmpty() ? getCurrFloor() : downStops.first();
 	}
 
-	public Direction getDirection() {
+	public synchronized Direction getDirection() {
 		return this.currDirection;
 	}
 
-	public void setCurrDirection(Direction direction) {
+	public synchronized void setCurrDirection(Direction direction) {
 		this.currDirection = direction;
 	}
 
@@ -128,7 +140,7 @@ public class ElevatorSCAN implements Elevator, Runnable {
 	public State getState() {
 		State state = new State();
 		state.currentFloor = getCurrFloor();
-		state.destFloor = getDestFloor();
+		state.destFloor = getNextFloor();
 		state.elevatorId = getId();
 		return state;
 	}
@@ -140,21 +152,23 @@ public class ElevatorSCAN implements Elevator, Runnable {
 
 	@Override
 	public void run() {
-		while (!this.isEmpty()) {
-			if (getDirection() == Direction.IDLE)
+		while (isAlive) {
+			while (!this.isEmpty()) {
+				if (getDirection() == Direction.IDLE)
+					setCurrDirection(Direction.UP);
+				goUp();
+				setCurrDirection(Direction.DOWN);
+				goDown();
 				setCurrDirection(Direction.UP);
-			goUp();
-			setCurrDirection(Direction.DOWN);
-			goDown();
-			setCurrDirection(Direction.UP);
+			}
+			setCurrDirection(Direction.IDLE);
 		}
-		setCurrDirection(Direction.IDLE);
 	}
 
 	private void goUp() {
 		if (upStops.isEmpty() || getDirection() != Direction.UP)
 			return;
-		while (currFloor <= upStops.last()) {
+		while (!upStops.isEmpty() && currFloor <= upStops.last()) {
 			step();
 			upStops.remove(currFloor);
 			Integer next = upStops.higher(currFloor);
@@ -165,10 +179,10 @@ public class ElevatorSCAN implements Elevator, Runnable {
 	private void goDown() {
 		if (downStops.isEmpty() || getDirection() != Direction.DOWN)
 			return;
-		while (currFloor >= downStops.first()) {
+		while (!downStops.isEmpty() && currFloor >= downStops.first()) {
 			step();
 			downStops.remove(currFloor);
-			Integer next = upStops.lower(currFloor);
+			Integer next = downStops.lower(currFloor);
 			currFloor = next != null ? next : currFloor;
 		}
 	}
@@ -197,6 +211,7 @@ public class ElevatorSCAN implements Elevator, Runnable {
 
 	@Override
 	public void stop() {
+		this.isAlive = false;
 		if (thread == null)
 			return;
 		if (!thread.isAlive())
