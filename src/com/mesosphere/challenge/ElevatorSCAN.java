@@ -25,14 +25,12 @@ public class ElevatorSCAN implements Elevator {
 		if (this.getDirection() == Direction.IDLE)
 			return Math.abs(this.getCurrFloor() - pickupFloor);
 
-		// case 1: pickup direction and current direction is different
-		Direction requestDirection = Direction.getDirection(pickupFloor, destFloor);
-		if (getDirection() != requestDirection)
+		// case 1: request direction and current direction is different
+		if (getDirection() != Direction.getDirection(pickupFloor, destFloor))
 			return differentDirectionDistance(pickupFloor);
 
 		// case 2: all in same direction
-		Direction currToPickupDirection = Direction.getDirection(this.getCurrFloor(), pickupFloor);
-		if (getDirection() == currToPickupDirection)
+		if (getDirection() == Direction.getDirection(this.getCurrFloor(), pickupFloor))
 			return Math.abs(getCurrFloor() - pickupFloor);
 
 		// case 3: currDirection and request is same but passed pickup floor
