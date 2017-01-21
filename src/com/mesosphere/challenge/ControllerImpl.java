@@ -49,12 +49,7 @@ public class ControllerImpl implements Controller {
 			return;
 		if (elevators.size() == 0)
 			throw new RuntimeException("no elevator available");
-		Request request = null;
-		try {
-			request = new Request(pickupFloor, destFloor);
-		} catch (IllegalArgumentException e) {
-			e.printStackTrace();
-		}
+		Request request = new Request(pickupFloor, destFloor);
 		addPendingRequest(request);
 		nearestElevator(request).addPickupRequest(request);
 	}
