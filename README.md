@@ -13,7 +13,7 @@ Steps after controller received pickup request (int pickupFloor, int destFloor) 
 3. Controller broadcast the `request` to all elevators.
 4. All elevators compute the distance to pickup floor, then response it to controller.
 5. Controller choose the nearest elevator to handle the request.
-6. The nearest elevator pickup the request
+6. The nearest elevator pickup the request.
 7. The elevator call the controller to remove the request from `pending-request-list`.
 
 ## Data Structures, Algorithms and Design Patterns
@@ -65,7 +65,7 @@ Steps after controller received pickup request (int pickupFloor, int destFloor) 
 
 #### Solution 1:
 
-- Use a `score` indicate how much match of a elevator to passenger.
+- Use a `score` indicate how much match of a elevator to request.
 
 #### Disadvantage 2:
 
