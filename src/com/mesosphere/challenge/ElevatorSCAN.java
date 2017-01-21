@@ -10,6 +10,7 @@ public class ElevatorSCAN implements Elevator, Runnable {
 	private boolean isAlive;
 	private Controller controller;
 	private Thread thread;
+	private boolean isProductEnv;
 
 	TreeSet<Integer> upStops;
 	TreeSet<Integer> downStops;
@@ -22,23 +23,21 @@ public class ElevatorSCAN implements Elevator, Runnable {
 	}
 
 	@Override
-	public int distanceToPickup(int pickupFloor, int destFloor) {
-		if (pickupFloor == destFloor)
-			return -1;
+	public int distanceToPickup(Request request) {
 		// case 0: this elevator is idle
 		if (this.getDirection() == Direction.IDLE)
-			return Math.abs(this.getCurrFloor() - pickupFloor);
+			return Math.abs(this.getCurrFloor() - request.pickupFloor);
 
 		// case 1: request direction and current direction is different
-		if (getDirection() != Direction.getDirection(pickupFloor, destFloor))
-			return differentDirectionDistance(pickupFloor);
+		if (getDirection() != request.direction)
+			return differentDirectionDistance(request.pickupFloor);
 
 		// case 2: all in same direction
-		if (getDirection() == Direction.getDirection(getCurrFloor(), pickupFloor))
-			return Math.abs(getCurrFloor() - pickupFloor);
+		if (getDirection() == Direction.getDirection(getCurrFloor(), request.pickupFloor))
+			return Math.abs(getCurrFloor() - request.pickupFloor);
 
 		// case 3: currDirection and request is same but passed pickup floor
-		return sameDirectionButPassedDistance(pickupFloor);
+		return sameDirectionButPassedDistance(request.pickupFloor);
 	}
 
 	private int differentDirectionDistance(int pickupFloor) {
@@ -58,23 +57,22 @@ public class ElevatorSCAN implements Elevator, Runnable {
 	}
 
 	@Override
-	public void addPickupRequest(int pickupFloor, int destFloor) {
-		if (pickupFloor == destFloor) {
-			return;
-		}
-		Direction direction = Direction.getDirection(pickupFloor, destFloor);
-		if (direction == Direction.UP) {
-			addStopFloors(upStops, pickupFloor, destFloor);
+	public void addPickupRequest(Request request) {
+		if (request.direction == Direction.UP) {
+			addStopFloors(upStops, request);
 		} else {
-			addStopFloors(downStops, pickupFloor, destFloor);
+			addStopFloors(downStops, request);
 		}
-		this.start();
+		if (controller != null)
+			controller.removePendingRequest(request);
+		if (isProductEnv) {
+			this.start();
+		}
 	}
 
-	private void addStopFloors(TreeSet<Integer> stops, int... floors) {
-		for (int floor : floors) {
-			stops.add(floor);
-		}
+	private void addStopFloors(TreeSet<Integer> stops, Request request) {
+		stops.add(request.pickupFloor);
+		stops.add(request.destFloor);
 	}
 
 	@Override
@@ -138,11 +136,7 @@ public class ElevatorSCAN implements Elevator, Runnable {
 
 	@Override
 	public State getState() {
-		State state = new State();
-		state.currentFloor = getCurrFloor();
-		state.destFloor = getNextFloor();
-		state.elevatorId = getId();
-		return state;
+		return new State(getId(), getCurrFloor(), getNextFloor());
 	}
 
 	@Override
@@ -189,7 +183,8 @@ public class ElevatorSCAN implements Elevator, Runnable {
 
 	@Override
 	public void step() {
-		controller.step(getState());
+		if (controller != null)
+			controller.step(getState());
 	}
 
 	@Override
@@ -221,6 +216,14 @@ public class ElevatorSCAN implements Elevator, Runnable {
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
+	}
+
+	public boolean isProductEnv() {
+		return isProductEnv;
+	}
+
+	public void setProductEnv(boolean isProductEnv) {
+		this.isProductEnv = isProductEnv;
 	}
 
 }

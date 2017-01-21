@@ -6,9 +6,8 @@ import org.junit.Test;
 import com.mesosphere.challenge.Controller;
 import com.mesosphere.challenge.ControllerImpl;
 import com.mesosphere.challenge.Elevator.Direction;
+import com.mesosphere.challenge.Elevator.Request;
 import com.mesosphere.challenge.ElevatorSCAN;
-
-import junit.framework.Assert;
 
 public class TestController {
 
@@ -23,17 +22,19 @@ public class TestController {
 	public void testDistanceDifferentDirection() {
 		ElevatorSCAN scan1 = new ElevatorSCAN(1);
 		ElevatorSCAN scan2 = new ElevatorSCAN(2);
+		scan1.setProductEnv(true);
+		scan2.setProductEnv(true);
 		scan1.register(controller);
 		scan2.register(controller);
 		scan1.setCurrDirection(Direction.UP);
 		scan2.setCurrDirection(Direction.DOWN);
-		scan1.addPickupRequest(5, 10);
-		int actual = scan1.distanceToPickup(8, 4);
-		Assert.assertEquals(12, actual);
-		scan1.addPickupRequest(8, 4);
-		scan2.addPickupRequest(4, 5);
-		scan2.addPickupRequest(7, 8);
-		scan1.addPickupRequest(10, 1);
+		scan1.addPickupRequest(new Request(5, 10));
+		// int actual = scan1.distanceToPickup(8, 4);
+		// Assert.assertEquals(12, actual);
+		scan1.addPickupRequest(new Request(8, 4));
+		scan2.addPickupRequest(new Request(4, 5));
+		scan2.addPickupRequest(new Request(7, 8));
+		scan1.addPickupRequest(new Request(10, 1));
 
 		controller.pickup(15, 10);
 		controller.pickup(51, 10);

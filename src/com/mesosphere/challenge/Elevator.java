@@ -10,14 +10,34 @@ public interface Elevator {
 	}
 
 	public class State {
-		int elevatorId;
-		int currentFloor;
-		int destFloor;
+		final int elevatorId;
+		final int currentFloor;
+		final int destFloor;
+
+		public State(int elevatorId, int currentFloor, int destFloor) {
+			this.elevatorId = elevatorId;
+			this.currentFloor = currentFloor;
+			this.destFloor = destFloor;
+		}
 	}
 
-	public int distanceToPickup(int pickupFloor, int destFloor);
+	public class Request {
+		final int pickupFloor;
+		final int destFloor;
+		final Direction direction;
 
-	public void addPickupRequest(int pickupFloor, int destFloor);
+		public Request(int pickupFloor, int destFloor) {
+			if (pickupFloor == destFloor)
+				throw new IllegalArgumentException("same pickup and dest floor");
+			this.pickupFloor = pickupFloor;
+			this.destFloor = destFloor;
+			this.direction = Direction.getDirection(pickupFloor, destFloor);
+		}
+	}
+
+	public int distanceToPickup(Request request);
+
+	public void addPickupRequest(Request request);
 
 	public void register(Controller controller);
 

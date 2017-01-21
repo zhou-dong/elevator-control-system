@@ -2,17 +2,29 @@ package com.mesosphere.challenge;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import com.mesosphere.challenge.Elevator.Request;
 import com.mesosphere.challenge.Elevator.State;
 
 public class ControllerImpl implements Controller {
 
 	private Map<Integer, Elevator> elevators;
+	private List<Request> pendingRequest;
 
 	public ControllerImpl() {
 		this.elevators = new HashMap<>();
+		this.pendingRequest = new LinkedList<>();
+	}
+
+	public void addPendingRequest(Request request) {
+		this.pendingRequest.add(request);
+	}
+
+	public void removePendingRequest(Request request) {
+		this.pendingRequest.remove(request);
 	}
 
 	@Override
@@ -37,14 +49,21 @@ public class ControllerImpl implements Controller {
 			return;
 		if (elevators.size() == 0)
 			throw new RuntimeException("no elevator available");
-		nearestElevator(pickupFloor, destFloor).addPickupRequest(pickupFloor, destFloor);
+		Request request = null;
+		try {
+			request = new Request(pickupFloor, destFloor);
+		} catch (IllegalArgumentException e) {
+			e.printStackTrace();
+		}
+		addPendingRequest(request);
+		nearestElevator(request).addPickupRequest(request);
 	}
 
-	private Elevator nearestElevator(int pickupFloor, int destFloor) {
+	private Elevator nearestElevator(Request request) {
 		Elevator result = null;
 		int min = Integer.MAX_VALUE;
 		for (Elevator elevator : elevators.values()) {
-			int distance = elevator.distanceToPickup(pickupFloor, destFloor);
+			int distance = elevator.distanceToPickup(request);
 			if (distance < min) {
 				min = distance;
 				result = elevator;

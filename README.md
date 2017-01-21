@@ -6,7 +6,14 @@ Mesosphere Distributed Applications Engineer Challenge
 
 At first, I don't want to let the "Central Control System" to control every step of the elevators. Each elevator should have it's own way to traversal among the floors.
 
-After control system received a pickup request, control system will ask all elevators the distance away from pickup floor. Every elevator will compute a distance by itself, then response the result to control system. Finally control system will choose the nearest elevator to pickup passenger.
+Steps after controller received pickup (int pickupFloor, int destFloor) :
+
+1. Controller received pickup request.
+2. Controller create a `request` and store it in `pending-request-list`.
+3. Controller broadcast the `request` to all elevators.
+4. All elevators compute the distance from pickup Floor, then response to controller.
+4. Controller choose the nearest elevator to handle the request.
+5. The nearest elevator pickup the request and call the controller to remove the request from `pending-request-list`.
 
 ## Data Structures, Algorithms and Design Patterns
 

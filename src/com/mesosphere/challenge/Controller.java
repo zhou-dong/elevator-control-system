@@ -2,6 +2,7 @@ package com.mesosphere.challenge;
 
 import java.util.List;
 
+import com.mesosphere.challenge.Elevator.Request;
 import com.mesosphere.challenge.Elevator.State;
 
 public interface Controller {
@@ -17,4 +18,6 @@ public interface Controller {
 	public void register(Elevator elevator);
 
 	public void unregister(Elevator elevator);
+
+	public void removePendingRequest(Request request);
 }
