@@ -67,6 +67,10 @@ After control system received a pickup request, control system will ask all elev
 
 - Implement 'Strategy Design Pattern' to change algorithm friendly.
 
+#### Disadvantage 3:
+
+- The interface I defined were terrible, I should only left the really necessary method. If I had time, should redefine the interface. 
+
 ## Build Instructions
 
 I leave all the eclipse configuration in repository, so just download the repository and import into eclipse as a java project.
