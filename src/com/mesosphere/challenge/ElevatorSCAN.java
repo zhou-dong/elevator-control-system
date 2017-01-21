@@ -12,8 +12,8 @@ public class ElevatorSCAN implements Elevator, Runnable {
 	private Thread thread;
 	private boolean isProductEnv;
 
-	TreeSet<Integer> upStops;
-	TreeSet<Integer> downStops;
+	private TreeSet<Integer> upStops;
+	private TreeSet<Integer> downStops;
 
 	public ElevatorSCAN(int id) {
 		this.id = id;
