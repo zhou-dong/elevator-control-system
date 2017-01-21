@@ -17,7 +17,7 @@ public class ElevatorSCAN implements Elevator, Runnable {
 
 	public ElevatorSCAN(int id) {
 		this.id = id;
-		this.isAlive = true;
+		this.isAlive = false;
 		this.upStops = new TreeSet<>();
 		this.downStops = new TreeSet<>();
 	}
@@ -148,6 +148,7 @@ public class ElevatorSCAN implements Elevator, Runnable {
 	public void register(Controller controller) {
 		controller.register(this);
 		this.controller = controller;
+		this.isAlive = true;
 	}
 
 	private void start() {
