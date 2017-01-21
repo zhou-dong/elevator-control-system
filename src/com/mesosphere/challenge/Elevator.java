@@ -35,31 +35,18 @@ public interface Elevator {
 		}
 	}
 
+	public int getId();
+
 	public int distanceToPickup(Request request);
 
 	public void addPickupRequest(Request request);
 
 	public void register(Controller controller);
 
-	public int getId();
-
-	public int getCurrFloor();
-
 	public void setCurrFloor(int floor);
-
-	public int getDestFloor();
 
 	public void setDestFloor(int floor);
 
-	public int getNextFloor();
-
 	public State getState();
 
-	public boolean isEmpty();
-
-	public void step();
-
-	public void start();
-
-	public void stop();
 }

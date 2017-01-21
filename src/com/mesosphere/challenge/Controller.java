@@ -7,7 +7,7 @@ import com.mesosphere.challenge.Elevator.State;
 
 public interface Controller {
 
-	public List<State> status();
+	public List<State> getStatus();
 
 	public void update(State state);
 
@@ -20,4 +20,5 @@ public interface Controller {
 	public void unregister(Elevator elevator);
 
 	public void removePendingRequest(Request request);
+
 }

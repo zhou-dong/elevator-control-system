@@ -28,7 +28,7 @@ public class ControllerImpl implements Controller {
 	}
 
 	@Override
-	public List<State> status() {
+	public List<State> getStatus() {
 		List<State> states = new ArrayList<>();
 		for (Elevator elevator : elevators.values())
 			states.add(elevator.getState());
