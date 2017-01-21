@@ -63,8 +63,9 @@ public class ElevatorSCAN implements Elevator, Runnable {
 		} else {
 			addStopFloors(downStops, request);
 		}
-		if (controller != null)
+		if (controller != null) {
 			controller.removePendingRequest(request);
+		}
 		if (isProductEnv) {
 			this.start();
 		}
