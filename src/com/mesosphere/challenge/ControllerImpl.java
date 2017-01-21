@@ -12,19 +12,19 @@ import com.mesosphere.challenge.Elevator.State;
 public class ControllerImpl implements Controller {
 
 	private Map<Integer, Elevator> elevators;
-	private List<Request> pendingRequest;
+	private List<Request> pendingRequests;
 
 	public ControllerImpl() {
 		this.elevators = new HashMap<>();
-		this.pendingRequest = new LinkedList<>();
+		this.pendingRequests = new LinkedList<>();
 	}
 
 	public void addPendingRequest(Request request) {
-		this.pendingRequest.add(request);
+		this.pendingRequests.add(request);
 	}
 
 	public void removePendingRequest(Request request) {
-		this.pendingRequest.remove(request);
+		this.pendingRequests.remove(request);
 	}
 
 	@Override
