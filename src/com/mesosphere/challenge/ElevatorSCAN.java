@@ -218,8 +218,9 @@ public class ElevatorSCAN implements Elevator, Runnable {
 			return -1;
 		if (getDirection() == Direction.UP) {
 			return upStops.isEmpty() ? getCurrFloor() : upStops.last();
-		} else
+		} else {
 			return downStops.isEmpty() ? getCurrFloor() : downStops.first();
+		}
 	}
 
 }
